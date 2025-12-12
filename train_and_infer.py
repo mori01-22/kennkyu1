@@ -29,6 +29,7 @@ from tensorflow.keras import layers
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing import image
+import matplotlib.pyplot as plt
 
 
 def create_datasets(data_dir, img_size=224, batch_size=32, val_split=0.2):
@@ -169,6 +170,31 @@ def main():
         # 学習
         print('\n--- Training ---')
         history = model.fit(train_ds, validation_data=val_ds, epochs=args.epochs)
+
+        # 学習曲線をプロットして保存する
+        try:
+            fig, ax = plt.subplots(1, 2, figsize=(12, 4))
+            ax[0].plot(history.history.get('accuracy', []), label='train_acc')
+            ax[0].plot(history.history.get('val_accuracy', []), label='val_acc')
+            ax[0].set_title('Accuracy')
+            ax[0].set_xlabel('epoch')
+            ax[0].set_ylabel('accuracy')
+            ax[0].legend()
+
+            ax[1].plot(history.history.get('loss', []), label='train_loss')
+            ax[1].plot(history.history.get('val_loss', []), label='val_loss')
+            ax[1].set_title('Loss')
+            ax[1].set_xlabel('epoch')
+            ax[1].set_ylabel('loss')
+            ax[1].legend()
+
+            plot_path = save_path / 'learning_curve.png'
+            fig.tight_layout()
+            fig.savefig(str(plot_path))
+            plt.close(fig)
+            print(f"学習曲線を保存しました: {plot_path}")
+        except Exception as e:
+            print(f"学習曲線の保存に失敗しました: {e}")
 
     # 評価（検証データでの精度表示）
     print('\n--- Evaluation on validation data ---')
