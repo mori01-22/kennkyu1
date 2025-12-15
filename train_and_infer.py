@@ -101,7 +101,8 @@ def load_and_preprocess_image(path, img_size=224):
     img = image.load_img(path, target_size=(img_size, img_size))
     arr = image.img_to_array(img)
     arr = np.expand_dims(arr, axis=0)
-    arr = preprocess_input(arr)
+    # 注意: モデル内部で preprocess_input を適用しているため、
+    # ここでは生画像配列をそのまま渡します（2重前処理を避ける）。
     return arr
 
 
