@@ -106,10 +106,13 @@ def load_and_preprocess_image(path, img_size=224):
     return arr
 
 
-def predict_test_images(model, test_dir, img_size=224, class_names=None, threshold=0.5):
+def predict_test_images(model, test_dir, img_size=224, class_names=None, threshold=0.5, message_fall=None, message_not_fall=None):
     """
     `test_dir` にある画像を1つずつモデルで分類して表示します。
     クラス名は `class_names`（例: ['fall','not_fall']）を渡すと良いです。
+    
+    message_fall / message_not_fall を渡すと、各結果行の末尾に任意の文章を付与します。
+    指定がない場合は既定のメッセージ（日本語）を付与します。
     """
     test_dir = Path(test_dir)
     if not test_dir.exists():
@@ -128,12 +131,17 @@ def predict_test_images(model, test_dir, img_size=224, class_names=None, thresho
         prob = float(pred[0][0])
         label = 1 if prob >= threshold else 0
         label_name = class_names[label] if class_names is not None else str(label)
-        results.append((p.name, label_name, prob))
+        # ラベルに応じたメッセージを決定
+        if label == 0:  # fall
+            msg = message_fall if message_fall is not None else "転倒の可能性があります。"
+        else:  # not_fall
+            msg = message_not_fall if message_not_fall is not None else "転倒の可能性は低いです。"
+        results.append((p.name, label_name, prob, msg))
 
     # 結果を表示
     print(f'\n=== Test Results (threshold={threshold}) ===')
-    for name, lbl, prob in results:
-        print(f"{name}: {lbl} (prob={prob:.4f})")
+    for name, lbl, prob, msg in results:
+        print(f"{name}: {lbl} (prob={prob:.4f}) - {msg}")
 
     return results
 
@@ -143,10 +151,12 @@ def main():
     parser.add_argument('--data-dir', type=str, default='dataset', help='dataset のルートフォルダ')
     parser.add_argument('--img-size', type=int, default=224, help='画像サイズ (px)')
     parser.add_argument('--batch-size', type=int, default=32, help='バッチサイズ')
-    parser.add_argument('--epochs', type=int, default=5, help='学習エポック数')
+    parser.add_argument('--epochs', type=int, default=100, help='学習エポック数')
     parser.add_argument('--save-dir', type=str, default='saved_model', help='学習済みモデル保存先')
     parser.add_argument('--use-saved', action='store_true', help='既に保存済みのモデルを読み込んで推論のみ行う')
     parser.add_argument('--threshold', type=float, default=0.5, help='推論時の閾値（デフォルト0.5）')
+    parser.add_argument('--message-fall', type=str, default=None, help='ラベルが fall のときの追記メッセージ')
+    parser.add_argument('--message-not-fall', type=str, default=None, help='ラベルが not_fall のときの追記メッセージ')
     args = parser.parse_args()
 
     # データセットの作成
@@ -220,7 +230,15 @@ def main():
 
     # テスト画像を分類（閾値を渡す）
     test_dir = Path(args.data_dir) / 'test'
-    predict_test_images(model, test_dir, img_size=args.img_size, class_names=class_names, threshold=args.threshold)
+    predict_test_images(
+        model,
+        test_dir,
+        img_size=args.img_size,
+        class_names=class_names,
+        threshold=args.threshold,
+        message_fall=args.message_fall,
+        message_not_fall=args.message_not_fall,
+    )
 
 
 if __name__ == '__main__':
