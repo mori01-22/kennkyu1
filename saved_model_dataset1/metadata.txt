@@ -1,0 +1,5 @@
+Dataset: dataset1
+Classes: ['fall', 'not_fall']
+Epochs: 100
+Validation Accuracy: 1.0000
+Validation Loss: 0.0252
