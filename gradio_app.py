@@ -197,7 +197,7 @@ with gr.Blocks(title="転倒判定システム", theme=gr.themes.Soft()) as demo
             
             gr.Markdown(
                 """
-                ### 💡 ヒント
+                ### 説明
                 - JPG, PNG形式の画像に対応
                 - 画像は自動的に224x224にリサイズされます
                 - モデルを切り替えて比較できます
@@ -231,7 +231,7 @@ with gr.Blocks(title="転倒判定システム", theme=gr.themes.Soft()) as demo
     gr.Markdown(
         f"""
         ---
-        **モデル情報:** MobileNetV2ベースの転移学習モデル  
+        **モデル情報:** mobilenetV2ベースの転移学習モデル  
         **利用可能なモデル数:** {len(available_models)}個  
         **閾値:** {THRESHOLD}
         """
