@@ -240,7 +240,7 @@ with gr.Blocks(title="転倒判定システム", theme=gr.themes.Soft()) as demo
 # アプリ起動
 if __name__ == "__main__":
     print("\n" + "="*50)
-    print("🚀 Webアプリを起動します...")
+    print("Webアプリを起動します...")
     print(f"利用可能なモデル: {len(available_models)}個")
     print("="*50 + "\n")
     
