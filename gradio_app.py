@@ -245,8 +245,7 @@ if __name__ == "__main__":
     print("="*50 + "\n")
     
     demo.launch(
-        share=False,
-        server_name="127.0.0.1",
+        share=True,  # 一時的な公開URLを生成（72時間有効）
         server_port=7860,
         show_error=True
     )

@@ -39,9 +39,12 @@ from tensorflow.keras.preprocessing import image
 import matplotlib.pyplot as plt
 
 
-def create_datasets(data_dir, img_size=224, batch_size=32, val_split=0.2):
+def create_datasets(data_dir, img_size=224, batch_size=32, val_split=0.2, seed=None):
     """トレーニング用と検証用のデータセットを作成"""
     train_dir = str(Path(data_dir) / "train")
+
+    if seed is None:
+        seed = int(np.random.randint(0, 1_000_000))
 
     train_ds = tf.keras.preprocessing.image_dataset_from_directory(
         train_dir,
@@ -49,7 +52,7 @@ def create_datasets(data_dir, img_size=224, batch_size=32, val_split=0.2):
         label_mode='binary',
         validation_split=val_split,
         subset="training",
-        seed=123,
+        seed=seed,
         image_size=(img_size, img_size),
         batch_size=batch_size
     )
@@ -60,7 +63,7 @@ def create_datasets(data_dir, img_size=224, batch_size=32, val_split=0.2):
         label_mode='binary',
         validation_split=val_split,
         subset="validation",
-        seed=123,
+        seed=seed,
         image_size=(img_size, img_size),
         batch_size=batch_size
     )

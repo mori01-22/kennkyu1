@@ -2,4 +2,4 @@ Dataset: dataset2
 Classes: ['fall', 'not_fall']
 Epochs: 100
 Validation Accuracy: 0.9625
-Validation Loss: 0.1557
+Validation Loss: 0.1175
